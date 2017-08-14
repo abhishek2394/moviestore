@@ -5,14 +5,16 @@ var mongodb = require('mongodb');
 var ObjectId = require("mongodb").ObjectID;
 var mongoose = require('mongoose');
 
+app.use(express.static(__dirname + "/moviestore"));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 Genre = require('./models/genres');
 Movie = require('./models/movies');
 //connect to mongoose
-var db ;
-mongodb.MongoClient.connect(process.env.MONGOLAB_URI , function (err, database) {
+var db =mongoose.connection ;
+mongodb.MongoClient.connect(process.env.MONGODB_URI ||'mongodb://abhi:gautam@ds017886.mlab.com:17886/moviestore' , function (err, database) {
   if (err) {
     console.log(err);
 		console.log(database);
