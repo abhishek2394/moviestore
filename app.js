@@ -1,16 +1,36 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var mongodb = require('mongodb');
+var ObjectId = require("mongodb").ObjectID;
 var mongoose = require('mongoose');
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 Genre = require('./models/genres');
 Movie = require('./models/movies');
 //connect to mongoose
+var db ;
+mongodb.MongoClient.connect(process.env.MONGOLAB_URI , function (err, database) {
+  if (err) {
+    console.log(err);
+		console.log(database);
+    process.exit(1);
+  }
 
-mongoose.connect('mongodb://localhost:27017/Mongodb', { useMongoClient: true });
-var db = mongoose.connection;
+
+
+// Save database object from the callback for reuse.
+  db = database;
+  console.log("Database connection ready");
+
+	// Initialize the app.
+  var server = app.listen(process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+	});
+});
 
 mongoose.model('users',{name: String});
 app.get('/', function(req, res){
@@ -115,8 +135,3 @@ app.delete('/api/movies/:_id', function(req, res){
 	});
 
 });
-
-
-app.listen(27017);
-console.log('Running on Port 3000..');
-
